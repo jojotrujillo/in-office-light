@@ -1,6 +1,5 @@
 import bluetooth
 import time
-
 # import Adafruit_BBIO.GPIO as GPIO
 
 search_time = 10
