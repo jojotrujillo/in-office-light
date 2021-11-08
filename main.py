@@ -1,9 +1,9 @@
 import bluetooth
 import time
-# import Adafruit_BBIO.GPIO as GPIO
+from gpiozero import LED
 
 search_time = 10
-led_pin = "P8_7"
+led_pin = LED(17)
 # You can hardcode the desired device ID here as a string to skip the discovery stage
 addr = "F4:AF:E7:72:CB:19"
 
@@ -51,9 +51,9 @@ while True:
     # Flip the LED pin on or off depending on whether the device is nearby
     if state is None and services == []:
         print("No device detected in range...")
-        # GPIO.output(led_pin, GPIO.LOW)
+        led_pin.off()
     else:
         print("Device detected!")
-        # GPIO.output(led_pin, GPIO.HIGH)
+        led_pin.on()
     # Arbitrary wait time
     time.sleep(1)
