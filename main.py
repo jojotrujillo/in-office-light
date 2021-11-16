@@ -1,11 +1,14 @@
 import bluetooth
 import time
 from gpiozero import LED
+from bt_rssi import BluetoothRSSI
 
 search_time = 10
 led_pin = LED(17)
+THRESHOLD = (-3, 38)
 # You can hardcode the desired device ID here as a string to skip the discovery stage
 addr = "F4:AF:E7:72:CB:19"
+b = BluetoothRSSI(addr=addr)
 
 print("Welcome to the Bluetooth Detection Demo! \nMake sure your desired Bluetooth-capable device is turned on and "
       "discoverable.")
@@ -46,14 +49,15 @@ while True:
     # Try to gather information from the desired device.
     # We're using two different metrics (readable name and data services)
     # to reduce false negatives.
+    rssi = b.get_rssi()
     state = bluetooth.lookup_name(addr, timeout=20)
     services = bluetooth.find_service(address=addr)
     # Flip the LED pin on or off depending on whether the device is nearby
-    if state is None and services == []:
-        print("No device detected in range...")
-        led_pin.off()
-    else:
+    if THRESHOLD[0] < rssi < THRESHOLD[1]:
         print("Device detected!")
         led_pin.on()
+    else:
+        print("No device detected in range...")
+        led_pin.off()
     # Arbitrary wait time
     time.sleep(1)
